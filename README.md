@@ -72,6 +72,7 @@ Once you're done, take a look at the command list and have fun.
 | !addplaylist [name] [link] | Add a youtube playlist                                              |
 | !delplaylist [name]        | Delete a youtube playlist. Limited to author and admins             |
 | !getplaylist               | Get the current playlist through DM. This also works with favorites |
+| !getplaylist [name]        | Get the specified playlist through DM. This also works with "favorites" to get your favorites |
 | !addfavorite               | Add song to your favorites                                          |
 | !delfavorite               | Remove song from your favorites                                     |
 | !playfavorites             | Play your favorites                                                 |

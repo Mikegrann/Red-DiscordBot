@@ -84,6 +84,7 @@ def loadHelp():
 	{0}addplaylist [name] [link] - Add a youtube playlist. Link format example: https://www.youtube.com/playlist?list=PLe8jmEHFkvsaDOOWcREvkgFoj6MD0pXXX
 	{0}delplaylist [name] - Delete a youtube playlist. Limited to author and admins.
 	{0}getplaylist - Receive the current playlist through DM. This also works with favorites.
+	{0}getplaylist [name] - Get the specified playlist through DM. This also works with "favorites" to get your favorites
 
 	**Local commands:**
 	{0}local [playlist_name] - Play chosen local playlist
@@ -325,8 +326,8 @@ async def on_message(message):
 				await removeFromFavorites(message)
 			elif message.content == p + "playfavorites":
 				await playFavorites(message)
-			elif message.content == p + "getplaylist":
-				await sendPlaylist(message)
+			elif message.content.startswith(p + "getplaylist"):
+				await getPlaylist(message)
 			elif message.content.startswith(p + "volume"):
 				await setVolume(message)
 			elif message.content == p + "downloadmode":
@@ -1487,19 +1488,36 @@ async def playFavorites(message):
 		else:
 			await client.send_message(message.channel, "{} `You don't have any favorites yet. Start adding them with !addfavorite`".format(message.author.mention))
 
-async def sendPlaylist(message):
-	if currentPlaylist:
-		msg = "Here's the current playlist:\n```"
-		for track in currentPlaylist.playlist:
-			msg += track
-			msg += "\n"
-			if len(msg) >= 1900:
-				msg += "```"
-				await client.send_message(message.author, msg)
-				msg = "```"
-		if msg != "```":
+async def getPlaylist(message):
+	parts = message.content.split()
+	if len(parts) == 1:
+		if currentPlaylist:
+			await sendPlaylist(message, currentPlaylist)
+		else:
+			await client.send_message(message.channel, "No playlist specified and no current playlist")
+	elif "favorite" in parts[1] and dataIO.fileIO("favorites/" + message.author.id + ".txt", "check"):
+		data = {"filename" : message.author.id, "type" : "favorites"}
+		pl = Playlist(data)
+		await sendPlaylist(message, pl)
+	elif dataIO.fileIO("playlists/" + parts[1] + ".txt", "check"):
+		data = {"filename" : parts[1], "type" : "playlist"}
+		pl = Playlist(data)
+		await sendPlaylist(message, pl)
+	else:
+		await client.send_message(message.channel, "No such playlist")
+
+async def sendPlaylist(message, pl):
+	msg = "Here's the playlist:\n```"
+	for track in pl.playlist:
+		msg += track
+		msg += "\n"
+		if len(msg) >= 1900:
 			msg += "```"
 			await client.send_message(message.author, msg)
+			msg = "```"
+	if msg != "```":
+		msg += "```"
+		await client.send_message(message.author, msg)
 
 async def setVolume(message):
 	global settings
