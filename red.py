@@ -1910,9 +1910,16 @@ async def twitchAlert():
 async def customCommand(message):
 	msg = message.content[1:]
 	if message.channel.server.id in commands:
+		parts = msg.split()
 		cmdlist = commands[message.channel.server.id]
-		if msg in cmdlist:
-			await client.send_message(message.channel, cmdlist[msg] )
+		if parts[0] in cmdlist:
+			await client.send_message(message.channel, parseCustomCommand(cmdlist[parts[0]], message, parts))
+
+def parseCustomCommand(com, message, parts):
+	com = com.replace("$(user)", message.author.mention)
+	for i in range(1, len(parts)):
+		com = com.replace("$({})".format(i), parts[i])
+	return com
 
 async def debug(message):	# If you don't know what this is, *leave it alone*
 	if message.author.id == settings["DEBUG_ID"]: # Never assign DEBUG_ID to someone other than you
