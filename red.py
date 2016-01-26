@@ -610,12 +610,12 @@ class Playlist():
 			self.playlist = dataIO.fileIO("favorites/" + filename["filename"] + ".txt", "load")
 		elif filename["type"] == "local":
 			self.playlist = filename["filename"]
-		elif filename["type"] == "singleSong":
+		elif filename["type"] == "unsaved":
 			self.playlist = [filename["filename"]]
 			self.playSingleSong(self.playlist[0])
 		else:
 			raise("Invalid playlist call.")
-		if filename["type"] != "singleSong":
+		if filename["type"] != "unsaved":
 			self.nextSong(0)
 
 	def nextSong(self, nextTrack, lastError=False):
@@ -1221,14 +1221,19 @@ async def playVideo(message):
 		else:
 			await client.send_message(message.channel, "{} `Invalid link.`".format(message.author.mention))
 			return False
-		stopMusic()
-		if settings["DOWNLOADMODE"]:
-			toDelete = await client.send_message(message.channel, "`I'm in download mode. It might take a bit for me to start. I'll delete this message as soon as I'm ready.`".format(id, message.author.name))
-		data = {"filename" : 'https://www.youtube.com/watch?v=' + id, "type" : "singleSong"}
-		currentPlaylist = Playlist(data)
-		if canDeleteMessages(message):
-			await client.send_message(message.channel, "`Playing youtube video {} requested by {}`".format(await youtubeparser.getTitle(currentPlaylist.playlist[currentPlaylist.current]), message.author.name))
+		if currentPlaylist and currentPlaylist.filename["type"] != "unsaved":
+			stopMusic()
+		data = {"filename" : 'https://www.youtube.com/watch?v=' + id, "type" : "unsaved"}
+		if currentPlaylist and currentPlaylist.filename["type"] == "unsaved":
+			toDelete = await client.send_message(message.channel, "`Queued youtube video`")
 			await client.delete_message(message)
+			currentPlaylist.playlist.append('https://www.youtube.com/watch?v=' + id)
+		else:
+			if settings["DOWNLOADMODE"]:
+				toDelete = await client.send_message(message.channel, "`I'm in download mode. It might take a bit for me to start. I'll delete this message as soon as I'm ready.`".format(id, message.author.name))
+			currentPlaylist = Playlist(data)
+			await currentPlaylist.songSwitcher()
+
 		if toDelete:
 			await client.delete_message(toDelete)
 #		currentPlaylist.playlist = ['https://www.youtube.com/watch?v=' + id]
@@ -1265,7 +1270,7 @@ async def playPlaylist(message, sing=False):
 						"https://www.youtube.com/watch?v=vFrjMq4aL-g", "https://www.youtube.com/watch?v=WROI5WYBU_A",
 						"https://www.youtube.com/watch?v=41tIUr_ex3g", "https://www.youtube.com/watch?v=f9O2Rjn1azc"]
 			song = choice(playlist)
-			data = {"filename" : song, "type" : "singleSong"}
+			data = {"filename" : song, "type" : "unsaved"}
 			if settings["DOWNLOADMODE"]:
 				toDelete = await client.send_message(message.channel, "`I'm in download mode. It might take a bit for me to start. I'll delete this message as soon as I'm ready.`".format(id, message.author.name))
 			currentPlaylist = Playlist(data)
