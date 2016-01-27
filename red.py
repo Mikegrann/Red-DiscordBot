@@ -19,6 +19,7 @@ import youtube_dl
 import os
 import asyncio
 import glob
+import shlex
 from os import path
 from random import choice, randint, shuffle
 
@@ -1969,18 +1970,21 @@ async def sendMessage(channel, content, delete_after=0):
 async def customCommand(message):
 	msg = message.content[1:]
 	if message.channel.server.id in commands:
-		parts = msg.split()
+		parts = shlex.split(msg, posix=False)
 		cmdlist = commands[message.channel.server.id]
+		cmd = parts[0]
+		rest = msg.replace(cmd + " ", "")
 		if parts[0] in cmdlist:
-			replacement = parseCustomCommand(cmdlist[parts[0]], message, parts)
+			replacement = parseCustomCommand(cmdlist[parts[0]], message, parts, rest)
 			if replacement[:1] == settings["PREFIX"] and settings["COMMAND_ALIASING"]:
 				message.content = replacement
 				await handleCommands(message)
 			else:
 				await sendMessage(message.channel, replacement)
 
-def parseCustomCommand(com, message, parts):
+def parseCustomCommand(com, message, parts, rest):
 	com = com.replace("$(user)", message.author.mention)
+	com = com.replace("$(*)", rest)
 	for i in range(1, len(parts)):
 		com = com.replace("$({})".format(i), parts[i])
 	return com
