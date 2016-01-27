@@ -225,196 +225,201 @@ async def on_message(message):
 			await talk(message)
 
 		if  message.channel.id not in shush_list:
-			if message.content == client.user.name.upper() or message.content == client.user.name.upper() + "?":
-				await sendMessage(message.channel, "`" + choice(greetings_caps) + "`")
-			elif message.content.lower() == client.user.name.lower() + "?":
-				await sendMessage(message.channel, "`" + choice(greetings) + "`")
-			elif message.content == client.user.mention + " ?" or message.content == client.user.mention + "?":
-				await sendMessage(message.channel, "`" + choice(greetings) + "`")
-			elif message.content == p + "flip":
-				await sendMessage(message.channel, "*flips a coin and... " + choice(["HEADS!*", "TAILS!*"]))
-			elif message.content.startswith(p + "rps"):
-				await rpsgame(message)
-			elif message.content == p + "proverb":
-				await sendMessage(message.channel, "`" + choice(proverbs) + "`")
-			elif message.content == p + "help":
-				await sendMessage(message.author, help)
-				await sendMessage(message.channel, "{} `Check your DMs for the command list.`".format(message.author.mention), 10)
-				await client.delete_message(message)
-			elif message.content.startswith(p + 'choose'):
-				await randomchoice(message)
-			elif message.content.startswith(p + '8 ') and message.content.endswith("?") and len(message.content) > 5:
-				await sendMessage(message.channel, "{}: ".format(message.author.mention) + "`" + choice(ball) + "`")
-			elif message.content.startswith(p + 'roll'):
-				await roll(message)
-			elif message.content.startswith(p + 'addcom'):
-				await addcom(message)
-			elif message.content.startswith(p + 'editcom'):
-				await editcom(message)
-			elif message.content.startswith(p + 'delcom'):
-				await delcom(message)
-			elif message.content == p + "customcommands":
-				await listCustomCommands(message)
-			elif message.content.startswith(p + 'sw'):
-				await stopwatch(message)
-			elif message.content.startswith(p + 'id'):
-				await sendMessage(message.channel, "{} `Your id is {}`".format(message.author.mention, message.author.id))
-			elif message.content.startswith(p + 'twitchalert'):
-				await addTwitchAlert(message)
-			elif message.content.startswith(p + 'stoptwitchalert'):
-				await removeTwitchAlert(message)
-			elif message.content.startswith(p + 'twitch'):
-				await twitchCheck(message)
-			elif message.content.startswith(p + 'image'):
-				#image(message)
-				pass
-			elif message.content.startswith(p + 'gif'):
-				await gif(message)
-			elif message.content.startswith(p + 'imdb'):
-				await imdb(message)
-			elif message.content.startswith(p + 'urban'):
-				await urban(message)
-			elif message.content.startswith(p + 'uptime'):
-				await uptime(message)
-			elif message.content.startswith(p + 'avatar'):
-				await avatar(message)
-			elif message.content == p + 'meme help' or message.content == p + 'memes':
-				await sendMessage(message.author, meme_help)
-				await sendMessage(message.channel, "{} `Check your DMs for " + p +"meme help.`".format(message.author.mention), 10)
-				await client.delete_message(message)
-			elif message.content.startswith (p + 'meme'):
-				await memes(message)
-			elif message.content.startswith (p + 'lmgtfy'):
-				await lmgtfy(message)
-			################## music #######################
-			elif message.content == p + "sing":
-				await playPlaylist(message, sing=True)
-			elif message.content.startswith(p + 'youtube'):
-				await playVideo(message)
-			elif message.content.startswith(p + 'play '):
-				await playPlaylist(message)
-			elif message.content.startswith(p + 'local '):
-				await playLocal(message)
-			elif message.content == p + "local" or message.content == p + "locallist" or message.content == p + "locals":
-				await listLocal(message)
-				await sendMessage(message.channel, "{} `Check your DMs for the local playlists list.`".format(message.author.mention), 10)
-				await client.delete_message(message)
-			elif message.content == p + "stop":
-				await leaveVoice()
-			elif message.content == p + "playlist" or message.content == p + "playlists":
-				await listPlaylists(message)
-				await sendMessage(message.channel, "{} `Check your DMs for the playlists list.`".format(message.author.mention), 10)
-				await client.delete_message(message)
-			elif message.content == p + "skip" or message.content == p + "next":
-				if currentPlaylist: currentPlaylist.nextSong(currentPlaylist.getNextSong())
-			elif message.content == p + "prev" or message.content == p + "previous":
-				if currentPlaylist: currentPlaylist.nextSong(currentPlaylist.getPreviousSong())
-			elif message.content == p + "repeat" or message.content == p + "replay":
-				if currentPlaylist: currentPlaylist.nextSong(currentPlaylist.current)
-			elif message.content == p + "pause":
-				if currentPlaylist: currentPlaylist.pause()
-			elif message.content == p + "resume":
-				if currentPlaylist: currentPlaylist.resume()
-			elif message.content == p + "shuffle":
-				if currentPlaylist: currentPlaylist.shuffle()
-			elif message.content == p + "song" or message.content == p + "title" :
-				if currentPlaylist: await getSongTitle(message)
-			elif message.content == p + "audio help":
-				await sendMessage(message.author, audio_help)
-				await sendMessage(message.channel, "{} `Check your DMs for the audio help.`".format(message.author.mention), 10)
-				await client.delete_message(message)
-			elif message.content.startswith(p + "addplaylist"):
-				await addPlaylist(message)
-			elif message.content.startswith(p + "delplaylist"):
-				await delPlaylist(message)
-			elif message.content == p + "addfavorite":
-				await addToFavorites(message)
-			elif message.content == p + "delfavorite":
-				await removeFromFavorites(message)
-			elif message.content == p + "playfavorites":
-				await playFavorites(message)
-			elif message.content.startswith(p + "getplaylist"):
-				await getPlaylist(message)
-			elif message.content.startswith(p + "volume"):
-				await setVolume(message)
-			elif message.content == p + "downloadmode":
-				await downloadMode(message)
-			elif message.content == p + "endpoll":
-				await endPoll(message)
-			elif message.content.startswith(p + "poll"):
-				await startPoll(message)
-			################################################
-			elif message.content == p + "trivia":
-				await triviaList(message)
-			elif message.content.startswith(p + "trivia"):
-				if checkAuth("Trivia", message, settings):
-					if message.content == p + "trivia stop":
-						if getTriviabyChannel(message.channel):
-							await getTriviabyChannel(message.channel).endGame()
-							await sendMessage(message.channel, "`Trivia stopped.`")
-						else:
-							await sendMessage(message.channel, "`There's no trivia session ongoing in this channel.`")
-					elif not getTriviabyChannel(message.channel):
-						t = Trivia(message)
-						trivia_sessions.append(t)
-						await t.loadQuestions(message.content)
-					else:
-						await sendMessage(message.channel, "`A trivia session is already ongoing in this channel.`")
-				else:
-					await sendMessage(message.channel, "`Trivia is currently admin-only.`")
-			######## Admin commands #######################
-			elif message.content.startswith(p + 'addwords'):
-				await addBadWords(message)
-			elif message.content.startswith(p + 'removewords'):
-				await removeBadWords(message)
-			elif message.content.startswith(p + 'addregex ') and len(message.content) > 11:
-				await addRegex(message)
-			elif message.content.startswith(p + 'removeregex ') and len(message.content) > 14:
-				await removeRegex(message)
-			elif message.content == p + "shutdown":
-				await shutdown(message)
-			elif message.content.startswith(p + 'join'):
-				await join(message)
-			elif message.content == p + "leaveserver":
-				await leave(message)
-			elif message.content == p + "shush":
-				await shush(message)	
-			elif message.content == p + "talk": #prevents !talk custom command
-				pass
-			elif message.content == p + "reload":
-				await reloadSettings(message)
-			elif message.content.startswith(p + "name"):
-				await changeName(message)
-			elif message.content.startswith(p + "cleanup"):
-				await cleanup(message)	
-			elif message.content == p + "admin help":
-				if isMemberAdmin(message):
-					await sendMessage(message.author, admin_help)
-					await client.delete_message(message)
-				else:
-					await sendMessage(message.channel, "`Admin status required.`")
-			elif message.content.startswith(p + "debug"):
-				await debug(message)
-			elif message.content.startswith(p + "exec"):
-				await execFunc(message)
-			elif message.content.startswith(p + "blacklist"):
-				await blacklist(message, "add")
-			elif message.content.startswith(p + "forgive"):
-				await blacklist(message, "remove")
-			elif message.content.startswith(p + "setting"):
-				await modifySettings(message)
-			###################################
-			elif getTriviabyChannel(message.channel): #check if trivia is ongoing in the channel
-				trvsession = getTriviabyChannel(message.channel)
-				await trvsession.checkAnswer(message)
-			elif "economy" in modules:
-				await economy.checkCommands(message)
+			await handleCommands(message)
 
-			if getPollByChannel(message):
-				getPollByChannel(message).checkAnswer(message)
+async def handleCommands(message):
+	p = settings["PREFIX"]
 
-			if message.content.startswith(p) and len(message.content) > 2 and settings["CUSTOMCOMMANDS"]:
-				await customCommand(message)
+	if message.content == client.user.name.upper() or message.content == client.user.name.upper() + "?":
+		await sendMessage(message.channel, "`" + choice(greetings_caps) + "`")
+	elif message.content.lower() == client.user.name.lower() + "?":
+		await sendMessage(message.channel, "`" + choice(greetings) + "`")
+	elif message.content == client.user.mention + " ?" or message.content == client.user.mention + "?":
+		await sendMessage(message.channel, "`" + choice(greetings) + "`")
+	elif message.content == p + "flip":
+		await sendMessage(message.channel, "*flips a coin and... " + choice(["HEADS!*", "TAILS!*"]))
+	elif message.content.startswith(p + "rps"):
+		await rpsgame(message)
+	elif message.content == p + "proverb":
+		await sendMessage(message.channel, "`" + choice(proverbs) + "`")
+	elif message.content == p + "help":
+		await sendMessage(message.author, help)
+		await sendMessage(message.channel, "{} `Check your DMs for the command list.`".format(message.author.mention), 10)
+		await client.delete_message(message)
+	elif message.content.startswith(p + 'choose'):
+		await randomchoice(message)
+	elif message.content.startswith(p + '8 ') and message.content.endswith("?") and len(message.content) > 5:
+		await sendMessage(message.channel, "{}: ".format(message.author.mention) + "`" + choice(ball) + "`")
+	elif message.content.startswith(p + 'roll'):
+		await roll(message)
+	elif message.content.startswith(p + 'addcom'):
+		await addcom(message)
+	elif message.content.startswith(p + 'editcom'):
+		await editcom(message)
+	elif message.content.startswith(p + 'delcom'):
+		await delcom(message)
+	elif message.content == p + "customcommands":
+		await listCustomCommands(message)
+	elif message.content.startswith(p + 'sw'):
+		await stopwatch(message)
+	elif message.content.startswith(p + 'id'):
+		await sendMessage(message.channel, "{} `Your id is {}`".format(message.author.mention, message.author.id))
+	elif message.content.startswith(p + 'twitchalert'):
+		await addTwitchAlert(message)
+	elif message.content.startswith(p + 'stoptwitchalert'):
+		await removeTwitchAlert(message)
+	elif message.content.startswith(p + 'twitch'):
+		await twitchCheck(message)
+	elif message.content.startswith(p + 'image'):
+		#image(message)
+		pass
+	elif message.content.startswith(p + 'gif'):
+		await gif(message)
+	elif message.content.startswith(p + 'imdb'):
+		await imdb(message)
+	elif message.content.startswith(p + 'urban'):
+		await urban(message)
+	elif message.content.startswith(p + 'uptime'):
+		await uptime(message)
+	elif message.content.startswith(p + 'avatar'):
+		await avatar(message)
+	elif message.content == p + 'meme help' or message.content == p + 'memes':
+		await sendMessage(message.author, meme_help)
+		await sendMessage(message.channel, "{} `Check your DMs for " + p +"meme help.`".format(message.author.mention), 10)
+		await client.delete_message(message)
+	elif message.content.startswith (p + 'meme'):
+		await memes(message)
+	elif message.content.startswith (p + 'lmgtfy'):
+		await lmgtfy(message)
+	################## music #######################
+	elif message.content == p + "sing":
+		await playPlaylist(message, sing=True)
+	elif message.content.startswith(p + 'youtube'):
+		await playVideo(message)
+	elif message.content.startswith(p + 'play '):
+		await playPlaylist(message)
+	elif message.content.startswith(p + 'local '):
+		await playLocal(message)
+	elif message.content == p + "local" or message.content == p + "locallist" or message.content == p + "locals":
+		await listLocal(message)
+		await sendMessage(message.channel, "{} `Check your DMs for the local playlists list.`".format(message.author.mention), 10)
+		await client.delete_message(message)
+	elif message.content == p + "stop":
+		await leaveVoice()
+	elif message.content == p + "playlist" or message.content == p + "playlists":
+		await listPlaylists(message)
+		await sendMessage(message.channel, "{} `Check your DMs for the playlists list.`".format(message.author.mention), 10)
+		await client.delete_message(message)
+	elif message.content == p + "skip" or message.content == p + "next":
+		if currentPlaylist: currentPlaylist.nextSong(currentPlaylist.getNextSong())
+	elif message.content == p + "prev" or message.content == p + "previous":
+		if currentPlaylist: currentPlaylist.nextSong(currentPlaylist.getPreviousSong())
+	elif message.content == p + "repeat" or message.content == p + "replay":
+		if currentPlaylist: currentPlaylist.nextSong(currentPlaylist.current)
+	elif message.content == p + "pause":
+		if currentPlaylist: currentPlaylist.pause()
+	elif message.content == p + "resume":
+		if currentPlaylist: currentPlaylist.resume()
+	elif message.content == p + "shuffle":
+		if currentPlaylist: currentPlaylist.shuffle()
+	elif message.content == p + "song" or message.content == p + "title" :
+		if currentPlaylist: await getSongTitle(message)
+	elif message.content == p + "audio help":
+		await sendMessage(message.author, audio_help)
+		await sendMessage(message.channel, "{} `Check your DMs for the audio help.`".format(message.author.mention), 10)
+		await client.delete_message(message)
+	elif message.content.startswith(p + "addplaylist"):
+		await addPlaylist(message)
+	elif message.content.startswith(p + "delplaylist"):
+		await delPlaylist(message)
+	elif message.content == p + "addfavorite":
+		await addToFavorites(message)
+	elif message.content == p + "delfavorite":
+		await removeFromFavorites(message)
+	elif message.content == p + "playfavorites":
+		await playFavorites(message)
+	elif message.content.startswith(p + "getplaylist"):
+		await getPlaylist(message)
+	elif message.content.startswith(p + "volume"):
+		await setVolume(message)
+	elif message.content == p + "downloadmode":
+		await downloadMode(message)
+	elif message.content == p + "endpoll":
+		await endPoll(message)
+	elif message.content.startswith(p + "poll"):
+		await startPoll(message)
+	################################################
+	elif message.content == p + "trivia":
+		await triviaList(message)
+	elif message.content.startswith(p + "trivia"):
+		if checkAuth("Trivia", message, settings):
+			if message.content == p + "trivia stop":
+				if getTriviabyChannel(message.channel):
+					await getTriviabyChannel(message.channel).endGame()
+					await sendMessage(message.channel, "`Trivia stopped.`")
+				else:
+					await sendMessage(message.channel, "`There's no trivia session ongoing in this channel.`")
+			elif not getTriviabyChannel(message.channel):
+				t = Trivia(message)
+				trivia_sessions.append(t)
+				await t.loadQuestions(message.content)
+			else:
+				await sendMessage(message.channel, "`A trivia session is already ongoing in this channel.`")
+		else:
+			await sendMessage(message.channel, "`Trivia is currently admin-only.`")
+	######## Admin commands #######################
+	elif message.content.startswith(p + 'addwords'):
+		await addBadWords(message)
+	elif message.content.startswith(p + 'removewords'):
+		await removeBadWords(message)
+	elif message.content.startswith(p + 'addregex ') and len(message.content) > 11:
+		await addRegex(message)
+	elif message.content.startswith(p + 'removeregex ') and len(message.content) > 14:
+		await removeRegex(message)
+	elif message.content == p + "shutdown":
+		await shutdown(message)
+	elif message.content.startswith(p + 'join'):
+		await join(message)
+	elif message.content == p + "leaveserver":
+		await leave(message)
+	elif message.content == p + "shush":
+		await shush(message)	
+	elif message.content == p + "talk": #prevents !talk custom command
+		pass
+	elif message.content == p + "reload":
+		await reloadSettings(message)
+	elif message.content.startswith(p + "name"):
+		await changeName(message)
+	elif message.content.startswith(p + "cleanup"):
+		await cleanup(message)	
+	elif message.content == p + "admin help":
+		if isMemberAdmin(message):
+			await sendMessage(message.author, admin_help)
+			await client.delete_message(message)
+		else:
+			await sendMessage(message.channel, "`Admin status required.`")
+	elif message.content.startswith(p + "debug"):
+		await debug(message)
+	elif message.content.startswith(p + "exec"):
+		await execFunc(message)
+	elif message.content.startswith(p + "blacklist"):
+		await blacklist(message, "add")
+	elif message.content.startswith(p + "forgive"):
+		await blacklist(message, "remove")
+	elif message.content.startswith(p + "setting"):
+		await modifySettings(message)
+	###################################
+	elif getTriviabyChannel(message.channel): #check if trivia is ongoing in the channel
+		trvsession = getTriviabyChannel(message.channel)
+		await trvsession.checkAnswer(message)
+	elif "economy" in modules:
+		await economy.checkCommands(message)
+
+	if getPollByChannel(message):
+		getPollByChannel(message).checkAnswer(message)
+
+	if message.content.startswith(p) and len(message.content) > 2 and settings["CUSTOMCOMMANDS"]:
+		await customCommand(message)
 
 @client.async_event
 async def on_ready():
@@ -1967,7 +1972,12 @@ async def customCommand(message):
 		parts = msg.split()
 		cmdlist = commands[message.channel.server.id]
 		if parts[0] in cmdlist:
-			await sendMessage(message.channel, parseCustomCommand(cmdlist[parts[0]], message, parts))
+			replacement = parseCustomCommand(cmdlist[parts[0]], message, parts)
+			if replacement[:1] == settings["PREFIX"]:
+				message.content = replacement
+				await handleCommands(message)
+			else:
+				await sendMessage(message.channel, replacement)
 
 def parseCustomCommand(com, message, parts):
 	com = com.replace("$(user)", message.author.mention)
