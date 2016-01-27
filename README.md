@@ -127,6 +127,44 @@ Custom commands only work in the server they were created in. Same for the messa
 
 Suggestions are always very welcome.
 
+>What is the COMMAND_ALIASING setting?
+
+Command aliasing refers to the ability for the bot to execute commands placed in the text of other custom commands. Therefore, one custom command can be used to access another built-in or custom command, possibly with certain default values or other customizations. These can be combined with the following special fields:
+* $(user) - replaced with an @mention of the person who used the command
+* $(1), $(2), ... $(i), ... $(n) - replaced with ith word after the command
+* $(*) - replaced with all of the command's arguments
+
+Examples:
+
+```
+>!addcom ask !8 $(*)?
+>!ask is that right
+```
+Red sees this as: '!8 is that right?' (and responds as usual)
+
+```
+>!addcom whoami You are $(user)
+>!whoami
+```
+Red writes back: 'You are [YOUR_USERNAME]'
+
+```
+>!addcom iam $(user) is $(*)
+>!iam an awesome person
+```
+Red writes back: '[YOUR_USERNAME] is an awesome person'
+
+```
+>!addcom replace (ノ°□°）ノ︵$(1)
+$(2)ノ(°-°ノ)
+>!replace THIS THAT
+```
+Red writes back:
+
+(ノ°□°）ノ︵THIS
+
+THATノ(°-°ノ)
+
 >How do local playlists work?
 
 Make as many folders as you want inside the localtracks folder. Names must be without spaces. Every folder counts as a different playlist. Every playlist can contain mp3 and flac files. Users can stream them by doing !local [playlist_name] and see the full list
