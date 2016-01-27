@@ -1973,7 +1973,7 @@ async def customCommand(message):
 		cmdlist = commands[message.channel.server.id]
 		if parts[0] in cmdlist:
 			replacement = parseCustomCommand(cmdlist[parts[0]], message, parts)
-			if replacement[:1] == settings["PREFIX"]:
+			if replacement[:1] == settings["PREFIX"] and settings["COMMAND_ALIASING"]:
 				message.content = replacement
 				await handleCommands(message)
 			else:
