@@ -226,24 +226,25 @@ async def on_message(message):
 
 		if  message.channel.id not in shush_list:
 			if message.content == client.user.name.upper() or message.content == client.user.name.upper() + "?":
-				await client.send_message(message.channel, "`" + choice(greetings_caps) + "`")
+				await sendMessage(message.channel, "`" + choice(greetings_caps) + "`")
 			elif message.content.lower() == client.user.name.lower() + "?":
-				await client.send_message(message.channel, "`" + choice(greetings) + "`")
+				await sendMessage(message.channel, "`" + choice(greetings) + "`")
 			elif message.content == client.user.mention + " ?" or message.content == client.user.mention + "?":
-				await client.send_message(message.channel, "`" + choice(greetings) + "`")
+				await sendMessage(message.channel, "`" + choice(greetings) + "`")
 			elif message.content == p + "flip":
-				await client.send_message(message.channel, "*flips a coin and... " + choice(["HEADS!*", "TAILS!*"]))
+				await sendMessage(message.channel, "*flips a coin and... " + choice(["HEADS!*", "TAILS!*"]))
 			elif message.content.startswith(p + "rps"):
 				await rpsgame(message)
 			elif message.content == p + "proverb":
-				await client.send_message(message.channel, "`" + choice(proverbs) + "`")
+				await sendMessage(message.channel, "`" + choice(proverbs) + "`")
 			elif message.content == p + "help":
-				await client.send_message(message.author, help)
-				await client.send_message(message.channel, "{} `Check your DMs for the command list.`".format(message.author.mention))
+				await sendMessage(message.author, help)
+				await sendMessage(message.channel, "{} `Check your DMs for the command list.`".format(message.author.mention), 10)
+				await client.delete_message(message)
 			elif message.content.startswith(p + 'choose'):
 				await randomchoice(message)
 			elif message.content.startswith(p + '8 ') and message.content.endswith("?") and len(message.content) > 5:
-				await client.send_message(message.channel, "{}: ".format(message.author.mention) + "`" + choice(ball) + "`")
+				await sendMessage(message.channel, "{}: ".format(message.author.mention) + "`" + choice(ball) + "`")
 			elif message.content.startswith(p + 'roll'):
 				await roll(message)
 			elif message.content.startswith(p + 'addcom'):
@@ -257,7 +258,7 @@ async def on_message(message):
 			elif message.content.startswith(p + 'sw'):
 				await stopwatch(message)
 			elif message.content.startswith(p + 'id'):
-				await client.send_message(message.channel, "{} `Your id is {}`".format(message.author.mention, message.author.id))
+				await sendMessage(message.channel, "{} `Your id is {}`".format(message.author.mention, message.author.id))
 			elif message.content.startswith(p + 'twitchalert'):
 				await addTwitchAlert(message)
 			elif message.content.startswith(p + 'stoptwitchalert'):
@@ -278,8 +279,9 @@ async def on_message(message):
 			elif message.content.startswith(p + 'avatar'):
 				await avatar(message)
 			elif message.content == p + 'meme help' or message.content == p + 'memes':
-				await client.send_message(message.author, meme_help)
-				await client.send_message(message.channel, "{} `Check your DMs for " + p +"meme help.`".format(message.author.mention))
+				await sendMessage(message.author, meme_help)
+				await sendMessage(message.channel, "{} `Check your DMs for " + p +"meme help.`".format(message.author.mention), 10)
+				await client.delete_message(message)
 			elif message.content.startswith (p + 'meme'):
 				await memes(message)
 			elif message.content.startswith (p + 'lmgtfy'):
@@ -295,12 +297,14 @@ async def on_message(message):
 				await playLocal(message)
 			elif message.content == p + "local" or message.content == p + "locallist" or message.content == p + "locals":
 				await listLocal(message)
-				await client.send_message(message.channel, "{} `Check your DMs for the local playlists list.`".format(message.author.mention))
+				await sendMessage(message.channel, "{} `Check your DMs for the local playlists list.`".format(message.author.mention), 10)
+				await client.delete_message(message)
 			elif message.content == p + "stop":
 				await leaveVoice()
 			elif message.content == p + "playlist" or message.content == p + "playlists":
 				await listPlaylists(message)
-				await client.send_message(message.channel, "{} `Check your DMs for the playlists list.`".format(message.author.mention))
+				await sendMessage(message.channel, "{} `Check your DMs for the playlists list.`".format(message.author.mention), 10)
+				await client.delete_message(message)
 			elif message.content == p + "skip" or message.content == p + "next":
 				if currentPlaylist: currentPlaylist.nextSong(currentPlaylist.getNextSong())
 			elif message.content == p + "prev" or message.content == p + "previous":
@@ -316,8 +320,9 @@ async def on_message(message):
 			elif message.content == p + "song" or message.content == p + "title" :
 				if currentPlaylist: await getSongTitle(message)
 			elif message.content == p + "audio help":
-				await client.send_message(message.author, audio_help)
-				await client.send_message(message.channel, "{} `Check your DMs for the audio help.`".format(message.author.mention))
+				await sendMessage(message.author, audio_help)
+				await sendMessage(message.channel, "{} `Check your DMs for the audio help.`".format(message.author.mention), 10)
+				await client.delete_message(message)
 			elif message.content.startswith(p + "addplaylist"):
 				await addPlaylist(message)
 			elif message.content.startswith(p + "delplaylist"):
@@ -346,17 +351,17 @@ async def on_message(message):
 					if message.content == p + "trivia stop":
 						if getTriviabyChannel(message.channel):
 							await getTriviabyChannel(message.channel).endGame()
-							await client.send_message(message.channel, "`Trivia stopped.`")
+							await sendMessage(message.channel, "`Trivia stopped.`")
 						else:
-							await client.send_message(message.channel, "`There's no trivia session ongoing in this channel.`")
+							await sendMessage(message.channel, "`There's no trivia session ongoing in this channel.`")
 					elif not getTriviabyChannel(message.channel):
 						t = Trivia(message)
 						trivia_sessions.append(t)
 						await t.loadQuestions(message.content)
 					else:
-						await client.send_message(message.channel, "`A trivia session is already ongoing in this channel.`")
+						await sendMessage(message.channel, "`A trivia session is already ongoing in this channel.`")
 				else:
-					await client.send_message(message.channel, "`Trivia is currently admin-only.`")
+					await sendMessage(message.channel, "`Trivia is currently admin-only.`")
 			######## Admin commands #######################
 			elif message.content.startswith(p + 'addwords'):
 				await addBadWords(message)
@@ -384,9 +389,10 @@ async def on_message(message):
 				await cleanup(message)	
 			elif message.content == p + "admin help":
 				if isMemberAdmin(message):
-					await client.send_message(message.author, admin_help)
+					await sendMessage(message.author, admin_help)
+					await client.delete_message(message)
 				else:
-					await client.send_message(message.channel, "`Admin status required.`")
+					await sendMessage(message.channel, "`Admin status required.`")
 			elif message.content.startswith(p + "debug"):
 				await debug(message)
 			elif message.content.startswith(p + "exec"):
@@ -420,7 +426,7 @@ async def on_ready():
 @client.async_event
 def on_message_delete(message):
 	# WIP. Need to check for permissions
-	#await client.send_message(message.channel, "{} `I have deleted your message.`".format(message.author.mention))
+	#await sendMessage(message.channel, "{} `I have deleted your message.`".format(message.author.mention))
 	pass
 
 @client.async_event
@@ -477,10 +483,10 @@ class Trivia():
 					self.timeout = time.perf_counter()
 					if self.questionList: await self.newQuestion()
 				else:
-					await client.send_message(self.channel, "`There is no list with that name.`")
+					await sendMessage(self.channel, "`There is no list with that name.`")
 					await self.stopTrivia()
 		else:
-			await client.send_message(self.channel, "`" + settings["PREFIX"] + "trivia [list name]`")
+			await sendMessage(self.channel, "`" + settings["PREFIX"] + "trivia [list name]`")
 
 	async def stopTrivia(self):
 		global trivia_sessions
@@ -531,10 +537,10 @@ class Trivia():
 		self.status = "waiting for answer"
 		self.count += 1
 		self.timer = int(time.perf_counter())
-		await client.send_message(self.channel, "**Question number {}!**\n\n{}".format(str(self.count), self.currentQ["QUESTION"]))
+		await sendMessage(self.channel, "**Question number {}!**\n\n{}".format(str(self.count), self.currentQ["QUESTION"]))
 		while self.status != "correct answer" and abs(self.timer - int(time.perf_counter())) <= settings["TRIVIA_DELAY"]:
 			if abs(self.timeout - int(time.perf_counter())) >= settings["TRIVIA_TIMEOUT"]:
-				await client.send_message(self.channel, "Guys...? Well, I guess I'll stop then.")
+				await sendMessage(self.channel, "Guys...? Well, I guess I'll stop then.")
 				await self.stopTrivia()
 				return True
 			await asyncio.sleep(1) #Waiting for an answer or for the time limit
@@ -551,7 +557,7 @@ class Trivia():
 				msg += " **+1** for me!"
 				self.addPoint(client.user.name)
 			self.currentQ["ANSWERS"] = []
-			await client.send_message(self.channel, msg)
+			await sendMessage(self.channel, msg)
 			await client.send_typing(self.channel)
 			await asyncio.sleep(3)
 			if not self.status == "stop":
@@ -566,7 +572,7 @@ class Trivia():
 			t += str(score[1]) # score
 			t += "\n"
 		t += "```"
-		await client.send_message(self.channel, t)
+		await sendMessage(self.channel, t)
 
 	async def checkAnswer(self, message):
 		self.timeout = time.perf_counter()
@@ -575,7 +581,7 @@ class Trivia():
 				self.currentQ["ANSWERS"] = []
 				self.status = "correct answer"
 				self.addPoint(message.author.name)
-				await client.send_message(self.channel, "You got it {}! **+1** to you!".format(message.author.name))
+				await sendMessage(self.channel, "You got it {}! **+1** to you!".format(message.author.name))
 				await client.send_typing(self.channel)
 				return True
 
@@ -748,7 +754,7 @@ class Poll():
 		for id, data in self.answers.items():
 			msg += "{}. *{}*\n".format(id, data["ANSWER"])
 		msg += "\nType the number to vote!"
-		await client.send_message(self.channel, msg)
+		await sendMessage(self.channel, msg)
 		await asyncio.sleep(settings["POLL_DURATION"])
 		if self.valid:
 			await self.endPoll()
@@ -759,7 +765,7 @@ class Poll():
 		msg = "**POLL ENDED!**\n\n{}\n\n".format(self.question)
 		for data in self.answers.values():
 			msg += "*{}* - {} votes\n".format(data["ANSWER"], str(data["VOTES"]))
-		await client.send_message(self.channel, msg)
+		await sendMessage(self.channel, msg)
 		poll_sessions.remove(self)
 
 	def checkAnswer(self, message):
@@ -782,9 +788,9 @@ async def startPoll(message):
 			poll_sessions.append(p)
 			await p.start()
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "poll question;option1;option2 (...)`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "poll question;option1;option2 (...)`")
 	else:
-		await client.send_message(message.channel, "`A poll is already ongoing in this channel.`")
+		await sendMessage(message.channel, "`A poll is already ongoing in this channel.`")
 
 async def endPoll(message):
 	global poll_sessions
@@ -793,9 +799,9 @@ async def endPoll(message):
 		if p.author == message.author.id or isMemberAdmin(message):
 			await getPollByChannel(message).endPoll()
 		else:
-			await client.send_message(message.channel, "`Only admins and the author can stop the poll.`")
+			await sendMessage(message.channel, "`Only admins and the author can stop the poll.`")
 	else:
-		await client.send_message(message.channel, "`There's no poll ongoing in this channel.`")
+		await sendMessage(message.channel, "`There's no poll ongoing in this channel.`")
 
 
 def getPollByChannel(message):
@@ -820,14 +826,14 @@ async def addcom(message):
 					commands[message.channel.server.id] = cmdlist
 					dataIO.fileIO("json/commands.json", "save", commands)
 					logger.info("Saved commands database.")
-					await client.send_message(message.channel, "`Custom command successfully added.`")
+					await sendMessage(message.channel, "`Custom command successfully added.`")
 				else:
-					await client.send_message(message.channel, "`This command already exists. Use " + settings["PREFIX"] + "editcom [command] [text]`")
+					await sendMessage(message.channel, "`This command already exists. Use " + settings["PREFIX"] + "editcom [command] [text]`")
 
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "addcom [command] [text]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "addcom [command] [text]`")
 	else:
-		await client.send_message(message.channel, "`You don't have permissions to edit custom commands.`")
+		await sendMessage(message.channel, "`You don't have permissions to edit custom commands.`")
 
 async def editcom(message):
 	if checkAuth("ModifyCommands", message, settings):
@@ -843,16 +849,16 @@ async def editcom(message):
 					commands[message.channel.server.id] = cmdlist
 					dataIO.fileIO("json/commands.json", "save", commands)
 					logger.info("Saved commands database.")
-					await client.send_message(message.channel, "`Custom command successfully edited.`")
+					await sendMessage(message.channel, "`Custom command successfully edited.`")
 				else:
-					await client.send_message(message.channel, "`That command doesn't exist. Use " + settings["PREFIX"] + "addcom [command] [text]`")
+					await sendMessage(message.channel, "`That command doesn't exist. Use " + settings["PREFIX"] + "addcom [command] [text]`")
 			else:
-				await client.send_message(message.channel, "`There are no custom commands in this server. Use " + settings["PREFIX"] + "addcom [command] [text]`")
+				await sendMessage(message.channel, "`There are no custom commands in this server. Use " + settings["PREFIX"] + "addcom [command] [text]`")
 
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "editcom [command] [text]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "editcom [command] [text]`")
 	else:
-		await client.send_message(message.channel, "`You don't have permissions to edit custom commands.`")
+		await sendMessage(message.channel, "`You don't have permissions to edit custom commands.`")
 
 async def delcom(message):
 	if checkAuth("ModifyCommands", message, settings):
@@ -865,16 +871,16 @@ async def delcom(message):
 					commands[message.channel.server.id] = cmdlist
 					dataIO.fileIO("json/commands.json", "save", commands)
 					logger.info("Saved commands database.")
-					await client.send_message(message.channel, "`Custom command successfully deleted.`")
+					await sendMessage(message.channel, "`Custom command successfully deleted.`")
 				else:
-					await client.send_message(message.channel, "`That command doesn't exist.`")
+					await sendMessage(message.channel, "`That command doesn't exist.`")
 			else:
-				await client.send_message(message.channel, "`There are no custom commands in this server. Use " + settings["PREFIX"] + "addcom [command] [text]`")
+				await sendMessage(message.channel, "`There are no custom commands in this server. Use " + settings["PREFIX"] + "addcom [command] [text]`")
 
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "delcom [command]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "delcom [command]`")
 	else:
-		await client.send_message(message.channel, "`You don't have permissions to edit custom commands.`")
+		await sendMessage(message.channel, "`You don't have permissions to edit custom commands.`")
 
 async def listCustomCommands(message):
 	msg = "Custom commands: \n\n```"
@@ -887,11 +893,15 @@ async def listCustomCommands(message):
 				else:
 					msg = msg + d + "\t"
 			msg += "```"
-			await client.send_message(message.author, msg)
+			await sendMessage(message.author, msg)
+			await sendMessage(message.channel, "{} `Check your DMs for the custom command list.`".format(message.author.mention), 10)
+			await client.delete_message(message)
 		else:
-			await client.send_message(message.author, "There are no custom commands.")
+			await sendMessage(message.channel, "There are no custom commands.", 10)
+			await client.delete_message(message)
 	else:
-		await client.send_message(message.author, "There are no custom commands.")
+		await sendMessage(message.channel, "There are no custom commands.", 10)
+		await client.delete_message(message)
 
 def checkAuth(cmd, message, settings): #checks if those settings are on. If they are, it checks if the user is a owner
 	if cmd == "ModifyCommands":
@@ -931,45 +941,45 @@ async def rpsgame(message):
 				"lose": " You lose {}!".format(message.author.mention)
 			}
 			if userchoice == botchoice:
-				await client.send_message(message.channel, rps[botchoice] + msgs["square"])
+				await sendMessage(message.channel, rps[botchoice] + msgs["square"])
 			elif userchoice == "rock" and botchoice == "paper":
-				await client.send_message(message.channel, rps[botchoice] + msgs["lose"])
+				await sendMessage(message.channel, rps[botchoice] + msgs["lose"])
 			elif userchoice == "rock" and botchoice == "scissors":
-				await client.send_message(message.channel, rps[botchoice] + msgs["win"])
+				await sendMessage(message.channel, rps[botchoice] + msgs["win"])
 			elif userchoice == "paper" and botchoice == "rock":
-				await client.send_message(message.channel, rps[botchoice] + msgs["win"])
+				await sendMessage(message.channel, rps[botchoice] + msgs["win"])
 			elif userchoice == "paper" and botchoice == "scissors":
-				await client.send_message(message.channel, rps[botchoice] + msgs["lose"])
+				await sendMessage(message.channel, rps[botchoice] + msgs["lose"])
 			elif userchoice == "scissors" and botchoice == "rock":
-				await client.send_message(message.channel, rps[botchoice] + msgs["lose"])
+				await sendMessage(message.channel, rps[botchoice] + msgs["lose"])
 			elif userchoice == "scissors" and botchoice == "paper":
-				await client.send_message(message.channel, rps[botchoice] + msgs["win"])
+				await sendMessage(message.channel, rps[botchoice] + msgs["win"])
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "rps [rock or paper or scissors]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "rps [rock or paper or scissors]`")
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "rps [rock or paper or scissors]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "rps [rock or paper or scissors]`")
 
 async def randomchoice(message):
 	sentences = ["Mmm... I think I'll choose ", "I choose ", "I prefer ", "This one is best: ", "This: "]
 	msg = message.content[8:] # removes !choose
 	msg = msg.split(" or ")
 	if len(msg) == 1:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "choose option1 or option2 or option3 (...)`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "choose option1 or option2 or option3 (...)`")
 	elif len(msg) >= 2:
-		await client.send_message(message.channel, "`" + choice(sentences) + choice(msg) + "`")
+		await sendMessage(message.channel, "`" + choice(sentences) + choice(msg) + "`")
 	else:
-		await client.send_message(message.channel, "`The options must be at least two.`")
+		await sendMessage(message.channel, "`The options must be at least two.`")
 
 async def stopwatch(message):
 	global stopwatches
 	if message.author.id in stopwatches:
 		tmp = abs(stopwatches[message.author.id] - int(time.perf_counter()))
 		tmp = str(datetime.timedelta(seconds=tmp))
-		await client.send_message(message.channel, "`Stopwatch stopped! Time: " + str(tmp) + " `")
+		await sendMessage(message.channel, "`Stopwatch stopped! Time: " + str(tmp) + " `")
 		stopwatches.pop(message.author.id, None)
 	else:
 		stopwatches[message.author.id] = int(time.perf_counter())
-		await client.send_message(message.channel, "`Stopwatch started! Use " + settings["PREFIX"] + "sw to stop it.`")
+		await sendMessage(message.channel, "`Stopwatch started! Use " + settings["PREFIX"] + "sw to stop it.`")
 
 """
 async def image(message): # API's dead.
@@ -982,19 +992,19 @@ async def image(message): # API's dead.
 				search = "http://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + msg + "&start=0"
 				result = requests.get(search).json()
 				url = result["responseData"]["results"][0]["url"]
-				await client.send_message(message.channel, url)
+				await sendMessage(message.channel, url)
 			except:
-				await client.send_message(message.channel, "Error.")
+				await sendMessage(message.channel, "Error.")
 		else:
-			await client.send_message(message.channel, "Invalid search.")
+			await sendMessage(message.channel, "Invalid search.")
 	else:
-		await client.send_message(message.channel, "!image [text]")
+		await sendMessage(message.channel, "!image [text]")
 """
 
 async def imdb(message): # Method added by BananaWaffles.
 	msg = message.content.split()
 	if apis["MYAPIFILMS_TOKEN"] == "TOKENHERE":
-		await client.send_message(message.channel, "`This command wasn't configured properly. If you're the owner, edit json/apis.json`")
+		await sendMessage(message.channel, "`This command wasn't configured properly. If you're the owner, edit json/apis.json`")
 		return False
 	if len(msg) > 1:
 			if len(msg[1]) > 1 and len([msg[1]]) < 20:
@@ -1009,19 +1019,19 @@ async def imdb(message): # Method added by BananaWaffles.
 							rating = result['data']['movies'][0]['rating']
 							url = result['data']['movies'][0]['urlIMDB']
 							msg = "Title: " + title + " | Released on: " + year + " | IMDB Rating: " + rating + ".\n" + url
-							await client.send_message(message.channel, msg)
+							await sendMessage(message.channel, msg)
 					except:
-						await client.send_message(message.channel, "`Error.`")
+						await sendMessage(message.channel, "`Error.`")
 			else:
-				await client.send_message(message.channel, "`Invalid search.`")
+				await sendMessage(message.channel, "`Invalid search.`")
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "imdb [text]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "imdb [text]`")
 
 async def memes(message):
 	msg = message.content[6:]
 	msg = msg.split(";")
 	if apis["IMGFLIP_USERNAME"] == "USERNAMEHERE" or apis["IMGFLIP_PASSWORD"] == "PASSWORDHERE":
-		await client.send_message(message.channel, "`This command wasn't configured properly. If you're the owner, edit json/apis.json`")
+		await sendMessage(message.channel, "`This command wasn't configured properly. If you're the owner, edit json/apis.json`")
 		return False
 	if len(msg) == 3:
 		if len(msg[0]) > 1 and len([msg[1]]) < 20 and len([msg[2]]) < 20:
@@ -1031,14 +1041,14 @@ async def memes(message):
 					result = await r.json()
 				if result["data"] != []:		
 					url = result["data"]["url"]
-					await client.send_message(message.channel, url)
+					await sendMessage(message.channel, url)
 			except:
 				error = result["error_message"]
-				await client.send_message(message.channel, error)
+				await sendMessage(message.channel, error)
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "meme id;text1;text2   |  " + settings["PREFIX"] + "meme help for full list`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "meme id;text1;text2   |  " + settings["PREFIX"] + "meme help for full list`")
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "meme id;text1;text2   |  " + settings["PREFIX"] + "meme help for full list`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "meme id;text1;text2   |  " + settings["PREFIX"] + "meme help for full list`")
 
 async def urban(message):
 	msg = message.content.split()
@@ -1053,15 +1063,15 @@ async def urban(message):
 				if result["list"] != []:
 					definition = result['list'][0]['definition']
 					example = result['list'][0]['example']
-					await client.send_message(message.channel, "Definition: " + definition + "\n\n" + "Example: " + example )
+					await sendMessage(message.channel, "Definition: " + definition + "\n\n" + "Example: " + example )
 				else:
-					await client.send_message(message.channel, "`Your search terms gave no results.`")
+					await sendMessage(message.channel, "`Your search terms gave no results.`")
 			except:
-				await client.send_message(message.channel, "`Error.`")
+				await sendMessage(message.channel, "`Error.`")
 		else:
-			await client.send_message(message.channel, "`Invalid search.`")
+			await sendMessage(message.channel, "`Invalid search.`")
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "urban [text]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "urban [text]`")
 
 async def gif(message):
 	msg = message.content.split()
@@ -1075,38 +1085,38 @@ async def gif(message):
 					result = await r.json()
 				if result["data"] != []:		
 					url = result["data"][0]["url"]
-					await client.send_message(message.channel, url)
+					await sendMessage(message.channel, url)
 				else:
-					await client.send_message(message.channel, "`Your search terms gave no results.`")
+					await sendMessage(message.channel, "`Your search terms gave no results.`")
 			except:
-				await client.send_message(message.channel, "`Error.`")
+				await sendMessage(message.channel, "`Error.`")
 		else:
-			await client.send_message(message.channel, "`Invalid search.`")
+			await sendMessage(message.channel, "`Invalid search.`")
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "gif [text]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "gif [text]`")
 
 async def avatar(message):
 	if message.mentions:
 		m = message.mentions[0]
-		await client.send_message(message.channel, "{}'s avatar: {}".format(m.name, m.avatar_url))
+		await sendMessage(message.channel, "{}'s avatar: {}".format(m.name, m.avatar_url))
 	else:
 		if len(message.content.split(" ")) >= 2:
 			name = message.content[8:]
 			member = discord.utils.get(message.server.members, name=name)
 			if member != None:
-				await client.send_message(message.channel, "{}'s avatar: {}".format(member.name, member.avatar_url))
+				await sendMessage(message.channel, "{}'s avatar: {}".format(member.name, member.avatar_url))
 			else:
-				await client.send_message(message.channel, "`User not found.`")
+				await sendMessage(message.channel, "`User not found.`")
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "avatar [name or mention]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "avatar [name or mention]`")
 
 async def lmgtfy(message):
 	msg = message.content.split()
 	if len(msg) >= 2:
 		msg = "+".join(msg[1:])
-		await client.send_message(message.channel, "http://lmgtfy.com/?q=" + msg)
+		await sendMessage(message.channel, "http://lmgtfy.com/?q=" + msg)
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "lmgtfy [search terms]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "lmgtfy [search terms]`")
 
 def getTriviabyChannel(channel):
 	for t in trivia_sessions:
@@ -1120,13 +1130,13 @@ async def roll(message):
 		if msg[1].isdigit():
 			msg[1] = int(msg[1])
 			if msg[1] < 99999 and msg[1] > 1:
-				await client.send_message(message.channel, "{} :game_die: `{}` :game_die:".format(message.author.mention, str(randint(1, msg[1]))))
+				await sendMessage(message.channel, "{} :game_die: `{}` :game_die:".format(message.author.mention, str(randint(1, msg[1]))))
 			else:
-				await client.send_message(message.channel, "{} `A number between 1 and 99999, maybe? :)`".format(message.author.mention))
+				await sendMessage(message.channel, "{} `A number between 1 and 99999, maybe? :)`".format(message.author.mention))
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "roll [number]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "roll [number]`")
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "roll [number]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "roll [number]`")
 
 async def checkFilter(message): #WIP
 	msg = message.content.lower()
@@ -1165,21 +1175,23 @@ async def twitchCheck(message):
 			async with aiohttp.get(url) as r:
 				data = await r.json()
 			if "error" in data:
-				await client.send_message(message.channel, "{} `There is no streamer named {}`".format(message.author.mention, msg[1]))
+				await sendMessage(message.channel, "{} `There is no streamer named {}`".format(message.author.mention, msg[1]))
 			elif "stream" in data:
 				if data["stream"] != None:
-					await client.send_message(message.channel, "{} `{} is online!` {}".format(message.author.mention, msg[1], "http://www.twitch.tv/" + msg[1]))
+					await sendMessage(message.channel, "{} `{} is online!` {}".format(message.author.mention, msg[1], "http://www.twitch.tv/" + msg[1]))
 				else:
-					await client.send_message(message.channel, "{} `{} is offline.`".format(message.author.mention, msg[1]))
+					await sendMessage(message.channel, "{} `{} is offline.`".format(message.author.mention, msg[1]))
 			else:
-				await client.send_message(message.channel, "{} `There is no streamer named {}`".format(message.author.mention, msg[1]))
+				await sendMessage(message.channel, "{} `There is no streamer named {}`".format(message.author.mention, msg[1]))
 		except:
-			await client.send_message(message.channel, "{} `Error.`".format(message.author.mention))
+			await sendMessage(message.channel, "{} `Error.`".format(message.author.mention))
 	else:
-		await client.send_message(message.channel, "{} `".format(message.author.mention) + settings["PREFIX"] + "twitch [name]`")
+		await sendMessage(message.channel, "{} `".format(message.author.mention) + settings["PREFIX"] + "twitch [name]`")
 
 async def triviaList(message):
-	await client.send_message(message.author, trivia_help)
+	await sendMessage(message.author, trivia_help)
+	await sendMessage(message.channel, "{} `Check your DMs for the trivia lists.`".format(message.author.mention), 10)
+	await client.delete_message(message)
 	msg = "**Available trivia lists:** \n\n```"
 	lists = os.listdir("trivia/")
 	if lists:
@@ -1195,16 +1207,16 @@ async def triviaList(message):
 				else:
 					msg = msg + d + "\t"
 			msg += "```"
-			await client.send_message(message.author, msg)
+			await sendMessage(message.author, msg)
 		else:
-			await client.send_message(message.author, "There are no trivia lists available.")
+			await sendMessage(message.author, "There are no trivia lists available.")
 	else:
-		await client.send_message(message.author, "There are no trivia lists available.")
+		await sendMessage(message.author, "There are no trivia lists available.")
 
 async def uptime(message):
 	up = abs(uptime_timer - int(time.perf_counter()))
 	up = str(datetime.timedelta(seconds=up))
-	await client.send_message(message.channel, "`Uptime: {}`".format(up))
+	await sendMessage(message.channel, "`Uptime: {}`".format(up))
 
 async def checkVoice(message):
 	if not client.is_voice_connected():
@@ -1212,10 +1224,10 @@ async def checkVoice(message):
 			if message.author.voice_channel.permissions_for(message.server.me).connect:
 				await client.join_voice_channel(message.author.voice_channel)
 			else:
-				await client.send_message(message.channel, "{} `I need permissions to join that channel.`".format(message.author.mention))
+				await sendMessage(message.channel, "{} `I need permissions to join that channel.`".format(message.author.mention))
 				return False
 		else:
-			await client.send_message(message.channel, "{} `You need to join a voice channel first.`".format(message.author.mention))
+			await sendMessage(message.channel, "{} `You need to join a voice channel first.`".format(message.author.mention))
 			return False
 	return True
 
@@ -1230,18 +1242,18 @@ async def playVideo(message):
 		elif rr.group(2) != None:
 			id = rr.group(2)
 		else:
-			await client.send_message(message.channel, "{} `Invalid link.`".format(message.author.mention))
+			await sendMessage(message.channel, "{} `Invalid link.`".format(message.author.mention))
 			return False
 		if currentPlaylist and currentPlaylist.filename["type"] != "unsaved":
 			stopMusic()
 		data = {"filename" : 'https://www.youtube.com/watch?v=' + id, "type" : "unsaved"}
 		if currentPlaylist and currentPlaylist.filename["type"] == "unsaved":
-			toDelete = await client.send_message(message.channel, "`Queued youtube video`")
+			await sendMessage(message.channel, "`Queued youtube video`", 10)
 			await client.delete_message(message)
 			currentPlaylist.playlist.append('https://www.youtube.com/watch?v=' + id)
 		else:
 			if settings["DOWNLOADMODE"]:
-				toDelete = await client.send_message(message.channel, "`I'm in download mode. It might take a bit for me to start. I'll delete this message as soon as I'm ready.`".format(id, message.author.name))
+				toDelete = await sendMessage(message.channel, "`I'm in download mode. It might take a bit for me to start. I'll delete this message as soon as I'm ready.`".format(id, message.author.name))
 			currentPlaylist = Playlist(data)
 			await currentPlaylist.songSwitcher()
 
@@ -1265,14 +1277,14 @@ async def playPlaylist(message, sing=False):
 					stopMusic()
 					data = {"filename" : msg, "type" : "playlist"}
 					if settings["DOWNLOADMODE"]:
-						toDelete = await client.send_message(message.channel, "`I'm in download mode. It might take a bit for me to start and switch between tracks. I'll delete this message as soon as the current playlist stops.`".format(id, message.author.name))
+						toDelete = await sendMessage(message.channel, "`I'm in download mode. It might take a bit for me to start and switch between tracks. I'll delete this message as soon as the current playlist stops.`".format(id, message.author.name))
 					currentPlaylist = Playlist(data)
 					await asyncio.sleep(2)
 					await currentPlaylist.songSwitcher()
 					if toDelete:
 						await client.delete_message(toDelete)
 				else:
-					await client.send_message(message.channel, "{} `That playlist doesn't exist.`".format(message.author.mention))
+					await sendMessage(message.channel, "{} `That playlist doesn't exist.`".format(message.author.mention))
 	else:
 		if await checkVoice(message):
 			stopMusic()
@@ -1283,14 +1295,14 @@ async def playPlaylist(message, sing=False):
 			song = choice(playlist)
 			data = {"filename" : song, "type" : "unsaved"}
 			if settings["DOWNLOADMODE"]:
-				toDelete = await client.send_message(message.channel, "`I'm in download mode. It might take a bit for me to start. I'll delete this message as soon as I'm ready.`".format(id, message.author.name))
+				toDelete = await sendMessage(message.channel, "`I'm in download mode. It might take a bit for me to start. I'll delete this message as soon as I'm ready.`".format(id, message.author.name))
 			currentPlaylist = Playlist(data)
 #			currentPlaylist.playlist = [song]
 #			musicPlayer = client.voice.create_ytdl_player(song, options=youtube_dl_options)
 #			musicPlayer.start()
 			if toDelete:
 				await client.delete_message(toDelete)
-			await client.send_message(message.channel, choice(msg))
+			await sendMessage(message.channel, choice(msg))
 
 
 async def playLocal(message):
@@ -1313,11 +1325,11 @@ async def playLocal(message):
 					await asyncio.sleep(2)
 					await currentPlaylist.songSwitcher()
 				else:
-					await client.send_message(message.channel, "`There is no local playlist called {}. " + p + "local or " + p + "locallist to receive the list.`".format(msg[1]))
+					await sendMessage(message.channel, "`There is no local playlist called {}. " + p + "local or " + p + "locallist to receive the list.`".format(msg[1]))
 			else:
-				await client.send_message(message.channel, "`There are no valid playlists in the localtracks folder.`")
+				await sendMessage(message.channel, "`There are no valid playlists in the localtracks folder.`")
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "local [playlist]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "local [playlist]`")
 
 def getLocalPlaylists():
 	dirs = []
@@ -1349,9 +1361,9 @@ async def listPlaylists(message):
 				else:
 					msg = msg + f.replace(".txt", "") + "\t"
 		msg += "```"
-		await client.send_message(message.author, msg)
+		await sendMessage(message.author, msg)
 	else:
-		await client.send_message(message.author, "There are no playlists.")
+		await sendMessage(message.author, "There are no playlists.")
 
 async def listLocal(message):
 	msg = "Available local playlists: \n\n```"
@@ -1363,9 +1375,9 @@ async def listLocal(message):
 			else:
 				msg = msg + d + "\t"
 		msg += "```"
-		await client.send_message(message.author, msg)
+		await sendMessage(message.author, msg)
 	else:
-		await client.send_message(message.author, "There are no local playlists.")
+		await sendMessage(message.author, "There are no local playlists.")
 
 
 def stopMusic():
@@ -1387,11 +1399,11 @@ async def transferPlaylist(message):
 				data = { "author" : message.author.id,
 						 "playlist": data}
 				dataIO.fileIO("playlists/" + msg["filename"], "save", data)
-				await client.send_message(message.channel, "`Playlist added. Name: {}`".format(msg["filename"].replace(".txt", "")))
+				await sendMessage(message.channel, "`Playlist added. Name: {}`".format(msg["filename"].replace(".txt", "")))
 			else:
-				await client.send_message(message.channel, "`Something is wrong with the playlist or its filename. Type " + settings["PREFIX"] + "audio help to read how to format it properly.`")
+				await sendMessage(message.channel, "`Something is wrong with the playlist or its filename. Type " + settings["PREFIX"] + "audio help to read how to format it properly.`")
 		else:
-			await client.send_message(message.channel, "`A playlist with that name already exists. Change the filename and resubmit it.`")
+			await sendMessage(message.channel, "`A playlist with that name already exists. Change the filename and resubmit it.`")
 
 def isPlaylistValid(data):
 	data = [y for y in data if y != ""] # removes all empty elements
@@ -1425,21 +1437,21 @@ async def addPlaylist(message):
 		_, name, link = msg
 		if isPlaylistNameValid(name) and len(name) < 25 and isPlaylistLinkValid(link):
 			if dataIO.fileIO("playlists/" + name + ".txt", "check"):
-				await client.send_message(message.channel, "`A playlist with that name already exists.`")
+				await sendMessage(message.channel, "`A playlist with that name already exists.`")
 				return False
 			links = await youtubeparser.parsePlaylist(link)
 			if links:
 				data = { "author" : message.author.id,
 						 "playlist": links}
 				dataIO.fileIO("playlists/" + name + ".txt", "save", data)
-				await client.send_message(message.channel, "`Playlist added. Name: {}`".format(name))
+				await sendMessage(message.channel, "`Playlist added. Name: {}`".format(name))
 			else:
-				await client.send_message(message.channel, "`Something went wrong. Either the link was incorrect or I was unable to retrieve the page.`")
+				await sendMessage(message.channel, "`Something went wrong. Either the link was incorrect or I was unable to retrieve the page.`")
 		else:
-			await client.send_message(message.channel, "`Something is wrong with the playlist's link or its filename. Remember, the name must be with only numbers, letters and underscores. Link must be this format: https://www.youtube.com/playlist?list=PLe8jmEHFkvsaDOOWcREvkgFoj6MD0pXXX`")
+			await sendMessage(message.channel, "`Something is wrong with the playlist's link or its filename. Remember, the name must be with only numbers, letters and underscores. Link must be this format: https://www.youtube.com/playlist?list=PLe8jmEHFkvsaDOOWcREvkgFoj6MD0pXXX`")
 
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "addplaylist [name] [link]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "addplaylist [name] [link]`")
 
 async def delPlaylist(message):
 	msg = message.content.split(" ")
@@ -1449,20 +1461,20 @@ async def delPlaylist(message):
 			authorid = dataIO.fileIO("playlists/" + filename + ".txt", "load")["author"]
 			if message.author.id == authorid or isMemberAdmin(message):
 				os.remove("playlists/" + filename + ".txt")
-				await client.send_message(message.channel, "`Playlist {} removed.`".format(filename))
+				await sendMessage(message.channel, "`Playlist {} removed.`".format(filename))
 			else:
-				await client.send_message(message.channel, "`Only the playlist's author and admins can do that.`")
+				await sendMessage(message.channel, "`Only the playlist's author and admins can do that.`")
 		else:
-			await client.send_message(message.channel, "`There is no playlist with that name.`")
+			await sendMessage(message.channel, "`There is no playlist with that name.`")
 	else:
-		await client.send_message(message.channel, "`" + settings["PREFIX"] + "delplaylist [name]`")
+		await sendMessage(message.channel, "`" + settings["PREFIX"] + "delplaylist [name]`")
 
 async def getSongTitle(message):
 	title = await youtubeparser.getTitle(currentPlaylist.playlist[currentPlaylist.current])
 	if title:
-		await client.send_message(message.channel, "`Current song: {}\n{}`".format(title, currentPlaylist.playlist[currentPlaylist.current]))
+		await sendMessage(message.channel, "`Current song: {}\n{}`".format(title, currentPlaylist.playlist[currentPlaylist.current]))
 	else:
-		await client.send_message(message.channel, "`I couldn't retrieve the current song's title.`")
+		await sendMessage(message.channel, "`I couldn't retrieve the current song's title.`")
 
 async def addToFavorites(message):
 	if currentPlaylist:
@@ -1472,9 +1484,9 @@ async def addToFavorites(message):
 			data = []
 		data.append(currentPlaylist.playlist[currentPlaylist.current])
 		dataIO.fileIO("favorites/" + message.author.id + ".txt", "save", data)
-		await client.send_message(message.channel, "{} `This song has been added to your favorites.`".format(message.author.mention))
+		await sendMessage(message.channel, "{} `This song has been added to your favorites.`".format(message.author.mention))
 	else:
-		await client.send_message(message.channel, "{} `No song is being played`".format(message.author.mention))
+		await sendMessage(message.channel, "{} `No song is being played`".format(message.author.mention))
 
 
 async def removeFromFavorites(message):
@@ -1484,13 +1496,13 @@ async def removeFromFavorites(message):
 			if currentPlaylist.playlist[currentPlaylist.current] in data:
 				data.remove(currentPlaylist.playlist[currentPlaylist.current])
 				dataIO.fileIO("favorites/" + message.author.id + ".txt", "save", data)
-				await client.send_message(message.channel, "{} `This song has been removed from your favorites.`".format(message.author.mention))
+				await sendMessage(message.channel, "{} `This song has been removed from your favorites.`".format(message.author.mention))
 			else:
-				await client.send_message(message.channel, "{} `This song isn't in your favorites.`".format(message.author.mention))
+				await sendMessage(message.channel, "{} `This song isn't in your favorites.`".format(message.author.mention))
 		else:
-			await client.send_message(message.channel, "{} `You don't have any favorites yet. Start adding them with " + settings["PREFIX"] + "addfavorite`".format(message.author.mention))
+			await sendMessage(message.channel, "{} `You don't have any favorites yet. Start adding them with " + settings["PREFIX"] + "addfavorite`".format(message.author.mention))
 	else:
-		await client.send_message(message.channel, "{} `No song is being played`".format(message.author.mention))
+		await sendMessage(message.channel, "{} `No song is being played`".format(message.author.mention))
 
 async def playFavorites(message):
 	global musicPlayer, currentPlaylist
@@ -1502,7 +1514,7 @@ async def playFavorites(message):
 			await asyncio.sleep(2)
 			await currentPlaylist.songSwitcher()
 		else:
-			await client.send_message(message.channel, "{} `You don't have any favorites yet. Start adding them with !addfavorite`".format(message.author.mention))
+			await sendMessage(message.channel, "{} `You don't have any favorites yet. Start adding them with !addfavorite`".format(message.author.mention))
 
 async def getPlaylist(message):
 	parts = message.content.split()
@@ -1510,7 +1522,7 @@ async def getPlaylist(message):
 		if currentPlaylist:
 			await sendPlaylist(message, currentPlaylist)
 		else:
-			await client.send_message(message.channel, "No playlist specified and no current playlist")
+			await sendMessage(message.channel, "No playlist specified and no current playlist")
 	elif "favorite" in parts[1] and dataIO.fileIO("favorites/" + message.author.id + ".txt", "check"):
 		data = {"filename" : message.author.id, "type" : "favorites"}
 		pl = Playlist(data)
@@ -1520,7 +1532,7 @@ async def getPlaylist(message):
 		pl = Playlist(data)
 		await sendPlaylist(message, pl)
 	else:
-		await client.send_message(message.channel, "No such playlist")
+		await sendMessage(message.channel, "No such playlist")
 
 async def sendPlaylist(message, pl):
 	msg = "Here's the playlist:\n```"
@@ -1529,11 +1541,11 @@ async def sendPlaylist(message, pl):
 		msg += "\n"
 		if len(msg) >= 1900:
 			msg += "```"
-			await client.send_message(message.author, msg)
+			await sendMessage(message.author, msg)
 			msg = "```"
 	if msg != "```":
 		msg += "```"
-		await client.send_message(message.author, msg)
+		await sendMessage(message.author, msg)
 
 async def setVolume(message):
 	global settings
@@ -1545,32 +1557,32 @@ async def setVolume(message):
 			vol = float(msg[1])
 			if vol >= 0 and vol <= 1:
 				settings["VOLUME"] = vol
-				await(client.send_message(message.channel, "`Volume set. Next track will have the desired volume.`"))
+				await(sendMessage(message.channel, "`Volume set. Next track will have the desired volume.`"))
 				dataIO.fileIO("json/settings.json", "save", settings)
 			else:
-				await(client.send_message(message.channel, "`Volume must be between 0 and 1. Example: " + p + "volume 0.50`"))
+				await(sendMessage(message.channel, "`Volume must be between 0 and 1. Example: " + p + "volume 0.50`"))
 		except:
-			await(client.send_message(message.channel, "`Volume must be between 0 and 1. Example: " + p + "volume 0.15`"))
+			await(sendMessage(message.channel, "`Volume must be between 0 and 1. Example: " + p + "volume 0.15`"))
 	else:
-		await(client.send_message(message.channel, "`Volume must be between 0 and 1. Example: " + p + "volume 0.15`"))
+		await(sendMessage(message.channel, "`Volume must be between 0 and 1. Example: " + p + "volume 0.15`"))
 
 async def downloadMode(message):
 	if isMemberAdmin(message):
 		if settings["DOWNLOADMODE"]:
 			settings["DOWNLOADMODE"] = False
-			await(client.send_message(message.channel, "`Download mode disabled. This mode is unstable and tracks might interrupt. Also, the volume settings will not have any effect.`"))
+			await(sendMessage(message.channel, "`Download mode disabled. This mode is unstable and tracks might interrupt. Also, the volume settings will not have any effect.`"))
 		else:
 			settings["DOWNLOADMODE"] = True
-			await(client.send_message(message.channel, "`Download mode enabled.`"))
+			await(sendMessage(message.channel, "`Download mode enabled.`"))
 		dataIO.fileIO("json/settings.json", "save", settings)
 	else:
-		await(client.send_message(message.channel, "`I don't take orders from you.`"))
+		await(sendMessage(message.channel, "`I don't take orders from you.`"))
 
 ############## ADMIN COMMANDS ###################
 
 async def shutdown(message):
 	if isMemberAdmin(message):
-		await client.send_message(message.channel, client.user.name + " shutting down... See you soon. :hand:")
+		await sendMessage(message.channel, client.user.name + " shutting down... See you soon. :hand:")
 		await client.logout()
 		try:
 			exit(1)
@@ -1578,7 +1590,7 @@ async def shutdown(message):
 			logger.info("Shutting down as requested by " + message.author.id + "...")
 			pass
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def join(message):
 	if isMemberAdmin(message):
@@ -1588,24 +1600,24 @@ async def join(message):
 		else:
 			logger.warning("Join: missing parameters")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def leave(message):
 	if isMemberAdmin(message):
-		await client.send_message(message.channel, "`Bye.`")
+		await sendMessage(message.channel, "`Bye.`")
 		await client.leave_server(message.channel.server)
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def shush(message):
 	global shush_list
 	if isMemberAdmin(message):
-		await client.send_message(message.channel, "`Ok, I'll ignore this channel.`")
+		await sendMessage(message.channel, "`Ok, I'll ignore this channel.`")
 		shush_list.append(message.channel.id)
 		dataIO.fileIO("json/shushlist.json", "save", shush_list)
 		logger.info("Saved silenced channels database.")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def talk(message):
 	if isMemberAdmin(message):
@@ -1613,9 +1625,9 @@ async def talk(message):
 			shush_list.remove(message.channel.id)
 			dataIO.fileIO("json/shushlist.json", "save", shush_list)
 			logger.info("Saved silenced channels database.")
-			await client.send_message(message.channel, "`Aaand I'm back.`")
+			await sendMessage(message.channel, "`Aaand I'm back.`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def addBadWords(message):
 	global badwords
@@ -1629,13 +1641,13 @@ async def addBadWords(message):
 					if word.find("/") != -1:
 						word = word.replace("/", " ")
 					badwords[message.server.id].append(word)
-			await client.send_message(message.channel, "`Updated banned words database.`")
+			await sendMessage(message.channel, "`Updated banned words database.`")
 			dataIO.fileIO("json/filter.json", "save", badwords)
 			logger.info("Saved filter words.")
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "addwords [word1] [word2] [phrase/with/many/words] (...)`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "addwords [word1] [word2] [phrase/with/many/words] (...)`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def removeBadWords(message):
 	global badwords
@@ -1651,13 +1663,13 @@ async def removeBadWords(message):
 						badwords[message.server.id].remove(w)
 					except:
 						pass
-				await client.send_message(message.channel, "`Updated banned words database.`")
+				await sendMessage(message.channel, "`Updated banned words database.`")
 				dataIO.fileIO("json/filter.json", "save", badwords)
 				logger.info("Saved filter words.")
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "removewords [word1] [word2] [phrase/with/many/words](...)`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "removewords [word1] [word2] [phrase/with/many/words](...)`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def changeName(message):
 	global settings
@@ -1669,9 +1681,9 @@ async def changeName(message):
 			except Exception as e:
 				logger.error(e)
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "name [new name]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "name [new name]`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def addRegex(message):
 	global badwords_regex
@@ -1681,11 +1693,11 @@ async def addRegex(message):
 		if not message.server.id in badwords_regex:
 			badwords_regex[message.server.id] = []
 		badwords_regex[message.server.id].append(msg)
-		await client.send_message(message.channel, "`Updated regex filter database.`")
+		await sendMessage(message.channel, "`Updated regex filter database.`")
 		dataIO.fileIO("json/regex_filter.json", "save", badwords_regex)
 		logger.info("Saved regex filter database.")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def removeRegex(message):
 	global badwords_regex
@@ -1695,20 +1707,20 @@ async def removeRegex(message):
 		if message.server.id in badwords_regex:
 			if msg in badwords_regex[message.server.id]:
 				badwords_regex[message.server.id].remove(msg)
-				await client.send_message(message.channel, "`Updated regex filter database.`")
+				await sendMessage(message.channel, "`Updated regex filter database.`")
 				dataIO.fileIO("json/regex_filter.json", "save", badwords_regex)
 				logger.info("Saved regex filter database.")
 			else:
-				await client.send_message(message.channel, "`No match.`")
+				await sendMessage(message.channel, "`No match.`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def reloadSettings(message):
 	if isMemberAdmin(message):
 		loadDataFromFiles(True)
-		await client.send_message(message.channel, "`Settings and files reloaded.`")
+		await sendMessage(message.channel, "`Settings and files reloaded.`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def cleanup(message):
 	errorMsg = "`" + settings["PREFIX"] + "cleanup [number] " + settings["PREFIX"] + "cleanup [name/mention] [number]`"
@@ -1727,13 +1739,13 @@ async def cleanup(message):
 					async for x in client.logs_from(message.channel, limit=n+1):
 						await client.delete_message(x)
 				else:
-					await client.send_message(message.channel, errorMsg)
+					await sendMessage(message.channel, errorMsg)
 			elif len(msg) == 3:
 				_, name, limit = msg
 				try:
 					limit = int(limit)
 				except:
-					await client.send_message(message.channel, errorMsg)
+					await sendMessage(message.channel, errorMsg)
 					return False
 				if message.mentions:
 					m = message.mentions[0]
@@ -1749,14 +1761,14 @@ async def cleanup(message):
 								limit -= 1
 						checksLeft -= 1
 				else:
-					await client.send_message(message.channel, errorMsg)
+					await sendMessage(message.channel, errorMsg)
 
 			else:
-				await client.send_message(message.channel, errorMsg)
+				await sendMessage(message.channel, errorMsg)
 		else:
-			await client.send_message(message.channel, "`I need permissions to delete messages.`")
+			await sendMessage(message.channel, "`I need permissions to delete messages.`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 def isMemberAdmin(message):
 	if not message.channel.is_private:
@@ -1777,11 +1789,11 @@ async def addTwitchAlert(message):
 		msg = message.content.split(" ")
 		if len(msg) == 2:
 			if "twitch.tv/" in msg[1]:
-				await client.send_message(message.channel, "`Enter the name of the stream, not the URL.`")
+				await sendMessage(message.channel, "`Enter the name of the stream, not the URL.`")
 				return False
 			for i, stream in enumerate(twitchStreams):
 				if stream["NAME"] == msg[1] and message.channel.id in stream["CHANNELS"]:
-					await client.send_message(message.channel, "`I'm already monitoring that stream in this channel.`")
+					await sendMessage(message.channel, "`I'm already monitoring that stream in this channel.`")
 					return False
 			for stream in twitchStreams:
 				if stream["NAME"] == msg[1] and message.channel.id not in stream["CHANNELS"]: # twitchAlert is already monitoring this streamer but not in this channel
@@ -1791,11 +1803,11 @@ async def addTwitchAlert(message):
 				twitchStreams.append({"CHANNELS" : [message.channel.id], "NAME" : msg[1], "ALREADY_ONLINE" : False})
 
 			dataIO.fileIO("json/twitch.json", "save", twitchStreams)
-			await client.send_message(message.channel, "`I will always send an alert in this channel whenever {}'s stream is online. Use !stoptwitchalert [name] to stop it.`".format(msg[1]))
+			await sendMessage(message.channel, "`I will always send an alert in this channel whenever {}'s stream is online. Use !stoptwitchalert [name] to stop it.`".format(msg[1]))
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "twitchalert [name]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "twitchalert [name]`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def removeTwitchAlert(message):
 	global twitchStreams
@@ -1809,13 +1821,13 @@ async def removeTwitchAlert(message):
 					else:
 						twitchStreams[i]["CHANNELS"].remove(message.channel.id)
 					dataIO.fileIO("json/twitch.json", "save", twitchStreams)
-					await client.send_message(message.channel, "`I will stop sending alerts about {}'s stream in this channel.`".format(msg[1]))
+					await sendMessage(message.channel, "`I will stop sending alerts about {}'s stream in this channel.`".format(msg[1]))
 					return True
-			await client.send_message(message.channel, "`There's no alert for {}'s stream in this channel.`".format(msg[1]))
+			await sendMessage(message.channel, "`There's no alert for {}'s stream in this channel.`".format(msg[1]))
 		else:
-			await client.send_message(message.channel, "`" + settings["PREFIX"] + "stoptwitchalert [name]`")
+			await sendMessage(message.channel, "`" + settings["PREFIX"] + "stoptwitchalert [name]`")
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def blacklist(message, mode):
 	global blacklisted_users
@@ -1831,23 +1843,23 @@ async def blacklist(message, mode):
 					name = message.content[9:]
 				m = discord.utils.get(message.server.members, name=name)
 				if m == None:
-					await client.send_message(message.channel, "`User not found.`")
+					await sendMessage(message.channel, "`User not found.`")
 					return False
 			else:
 				return False
 		if mode == "add":
 			blacklisted_users.append(m.id)
-			await client.send_message(message.channel, "`{} is now in blacklist.`".format(m.name))
+			await sendMessage(message.channel, "`{} is now in blacklist.`".format(m.name))
 		else:
 			if m.id in blacklisted_users:
 				blacklisted_users.remove(m.id)
-				await client.send_message(message.channel, "`{} has been removed from blacklist.`".format(m.name))
+				await sendMessage(message.channel, "`{} has been removed from blacklist.`".format(m.name))
 			else:
-				await client.send_message(message.channel, "`User not in blacklist.`")
+				await sendMessage(message.channel, "`User not in blacklist.`")
 				return False
 		dataIO.fileIO("json/blacklist.json", "save", blacklisted_users)
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 async def modifySettings(message):
 	global settings
@@ -1856,10 +1868,10 @@ async def modifySettings(message):
 		if len(msg) == 3:
 			_, key, value = msg
 			if key.lower() == "password" or key.lower() == "email" or key.lower() == "debug_id":
-				await client.send_message(message.channel, "`You cannot modify EMAIL, PASSWORD or DEBUG_ID`")
+				await sendMessage(message.channel, "`You cannot modify EMAIL, PASSWORD or DEBUG_ID`")
 				return False
 			if key.lower() == "prefix" and len(value) != 1:
-				await client.send_message(message.channel, "`Prefix cannot be more than one character.`")
+				await sendMessage(message.channel, "`Prefix cannot be more than one character.`")
 				return False
 			if key in settings.keys():
 				if value.lower() == "true": value = True
@@ -1875,9 +1887,9 @@ async def modifySettings(message):
 				if "economy" in modules:
 					economy.settings = settings
 					economy.loadHelp()
-				await client.send_message(message.channel, "`'{}' set to '{}'`".format(key, str(value)))
+				await sendMessage(message.channel, "`'{}' set to '{}'`".format(key, str(value)))
 			else:
-				await client.send_message(message.channel, "`That setting doesn't exist`")
+				await sendMessage(message.channel, "`That setting doesn't exist`")
 		else:
 			msg = "```"
 			for k, v in settings.items():
@@ -1885,9 +1897,9 @@ async def modifySettings(message):
 					msg += k + ": " + str(v) + "\n"
 			msg += "```\n"
 			msg += settings["PREFIX"] + "setting [setting] [value]"
-			await client.send_message(message.channel, msg)
+			await sendMessage(message.channel, msg)
 	else:
-		await client.send_message(message.channel, "`I don't take orders from you.`")
+		await sendMessage(message.channel, "`I don't take orders from you.`")
 
 ################################################
 
@@ -1914,7 +1926,7 @@ async def twitchAlert():
 								if not stream["ALREADY_ONLINE"]:
 									for channel in stream["CHANNELS"]:
 										try:
-											await client.send_message(client.get_channel(channel), "`{} is online!` {}".format(stream["NAME"], "http://www.twitch.tv/" + stream["NAME"]))
+											await sendMessage(client.get_channel(channel), "`{} is online!` {}".format(stream["NAME"], "http://www.twitch.tv/" + stream["NAME"]))
 										except: #In case of missing permissions
 											pass
 									twitchStreams[i]["ALREADY_ONLINE"] = True
@@ -1941,13 +1953,21 @@ async def twitchAlert():
 		else:
 			await asyncio.sleep(5)
 
+async def sendMessage(channel, content, delete_after=0):
+	sentMsg = await client.send_message(channel, content)
+	
+	if delete_after > 0:
+		await asyncio.sleep(delete_after)
+		await client.delete_message(sentMsg)
+	return sentMsg
+
 async def customCommand(message):
 	msg = message.content[1:]
 	if message.channel.server.id in commands:
 		parts = msg.split()
 		cmdlist = commands[message.channel.server.id]
 		if parts[0] in cmdlist:
-			await client.send_message(message.channel, parseCustomCommand(cmdlist[parts[0]], message, parts))
+			await sendMessage(message.channel, parseCustomCommand(cmdlist[parts[0]], message, parts))
 
 def parseCustomCommand(com, message, parts):
 	com = com.replace("$(user)", message.author.mention)
@@ -1963,11 +1983,11 @@ async def debug(message):	# If you don't know what this is, *leave it alone*
 			try:
 				result = str(eval(cmd))
 				if settings["PASSWORD"].lower() not in result.lower() and settings["EMAIL"].lower() not in result.lower():
-					await client.send_message(message.channel, "```" + result + "```")
+					await sendMessage(message.channel, "```" + result + "```")
 				else:
-					await client.send_message(message.author, "`Are you trying to send my credentials in chat? Because that's how you send my credentials in chat.`")
+					await sendMessage(message.author, "`Are you trying to send my credentials in chat? Because that's how you send my credentials in chat.`")
 			except Exception as e:
-				await client.send_message(message.channel, "```" + str(e) + "```")
+				await sendMessage(message.channel, "```" + str(e) + "```")
 
 async def execFunc(message): #same warning as the other function ^
 	if message.author.id == settings["DEBUG_ID"]:
@@ -1976,9 +1996,9 @@ async def execFunc(message): #same warning as the other function ^
 			_, cmd, _ = msg		
 			try:
 				result = exec(cmd)
-				#await client.send_message(message.channel, "```" + str(result) + "```")
+				#await sendMessage(message.channel, "```" + str(result) + "```")
 			except Exception as e:
-				await client.send_message(message.channel, "```" + str(e) + "```")
+				await sendMessage(message.channel, "```" + str(e) + "```")
 
 
 def console():
